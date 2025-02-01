@@ -8,6 +8,12 @@ import {
 } from "@clerk/nextjs";
 import "@/styles/globals.css";
 import { Quicksand } from "next/font/google";
+import {
+  SidebarInset,
+  SidebarProvider,
+  SidebarTrigger,
+} from "@/components/ui/sidebar";
+import { SidebarNav } from "@/components/SidebarNav";
 
 const quicksand = Quicksand({
   subsets: ['latin'],
@@ -30,7 +36,13 @@ function App({ Component, pageProps }: AppProps) {
   return (
     <ClerkProvider>
       <main className={`${quicksand.variable} font-sans`}>
-        <Component {...pageProps} />
+        <SidebarProvider>
+          <SidebarNav />
+          <SidebarInset>
+            <SidebarTrigger className="p-1 m-1" />
+            <Component {...pageProps} />
+          </SidebarInset>
+        </SidebarProvider>
       </main>
     </ClerkProvider>
   );

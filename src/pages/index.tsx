@@ -9,13 +9,7 @@ import { TipTapInput } from "@/components/TipTapInput";
 export default function Home() {
   return (
     <>
-      <SidebarProvider>
-        <SidebarNav />
-        <SidebarInset>
-          <SidebarTrigger className="p-1 m-1" />
-          <TipTapInput />
-        </SidebarInset>
-      </SidebarProvider>
+      <TipTapInput />
     </>
   );
 }
