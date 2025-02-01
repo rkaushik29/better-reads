@@ -5,10 +5,6 @@ import { createTRPCNext } from "@trpc/next";
 import type { AppRouter } from "@/server/routers/_app";
 import {
   ClerkProvider,
-  SignInButton,
-  SignedIn,
-  SignedOut,
-  UserButton
 } from "@clerk/nextjs";
 import "@/styles/globals.css";
 
