@@ -13,6 +13,7 @@
   "dependencies": {
     "@clerk/nextjs": "^6.10.6",
     "@radix-ui/react-dialog": "^1.1.5",
+    "@radix-ui/react-hover-card": "^1.1.5",
     "@radix-ui/react-slot": "^1.1.1",
     "@tanstack/react-query": "^4.36.1",
     "@trpc/client": "^10.45.2",
