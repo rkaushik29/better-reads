@@ -1,10 +1,8 @@
-// components/BookSearchWithTag.tsx
 import React, { useState, useRef, useEffect } from "react";
 import BookSearchInput from "./BookSearchInput";
 import TagChip from "./TagChip";
 import { Search } from "lucide-react";
 
-// Import card components from your Card module
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
@@ -14,11 +12,14 @@ const commandOptions: SearchTag[] = ["book", "author"];
 
 const API_KEY = process.env.NEXT_PUBLIC_GOOGLE_BOOKS_API_KEY;
 
-// Helper function to fetch books from Google Books API
-const fetchBooks = async (query: string, page: number) => {
+const fetchBooks = async (query: string, page: number, tag: SearchTag | null) => {
   const startIndex = (page - 1) * 20;
+  const searchQuery = tag 
+    ? `in${tag}:${query}`
+    : query;
+  
   const url = `https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(
-    query
+    searchQuery
   )}&key=${API_KEY}&maxResults=20&startIndex=${startIndex}`;
   const response = await fetch(url);
   if (!response.ok) {
@@ -37,7 +38,6 @@ export const BookSearchWithTag: React.FC = () => {
   const [selectedBook, setSelectedBook] = useState<any>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  // Show the command dropdown if no tag is selected and the input starts with "/"
   useEffect(() => {
     if (!selectedTag && inputValue.startsWith("/")) {
       setShowCommandDropdown(true);
@@ -46,7 +46,6 @@ export const BookSearchWithTag: React.FC = () => {
     }
   }, [inputValue, selectedTag]);
 
-  // Reset search results and pagination when query changes
   useEffect(() => {
     if (!showCommandDropdown && inputValue.trim() !== "") {
       setPage(1);
@@ -56,11 +55,10 @@ export const BookSearchWithTag: React.FC = () => {
     }
   }, [inputValue, showCommandDropdown]);
 
-  // Debounced API call to search books
   useEffect(() => {
     if (!showCommandDropdown && inputValue.trim() !== "") {
       const timer = setTimeout(() => {
-        fetchBooks(inputValue, page)
+        fetchBooks(inputValue, page, selectedTag)
           .then((data) => {
             if (page === 1) {
               setSearchResults(data.items || []);
@@ -73,7 +71,7 @@ export const BookSearchWithTag: React.FC = () => {
       }, 500);
       return () => clearTimeout(timer);
     }
-  }, [inputValue, page, showCommandDropdown]);
+  }, [inputValue, page, showCommandDropdown, selectedTag]);
 
   const handleCommandSelect = (option: SearchTag) => {
     setSelectedTag(option);
@@ -91,7 +89,6 @@ export const BookSearchWithTag: React.FC = () => {
     setPage((prev) => prev + 1);
   };
 
-  // When a search result is clicked, store its selfLink and open the detailed modal
   const handleResultClick = (item: any) => {
     if (item.selfLink) {
       localStorage.setItem("selectedBookSelfLink", item.selfLink);
@@ -126,7 +123,6 @@ export const BookSearchWithTag: React.FC = () => {
         />
       </div>
 
-      {/* Command dropdown when user types "/" */}
       {showCommandDropdown && (
         <div className="absolute left-0 right-0 mt-1 bg-white shadow rounded-md z-10">
           {commandOptions.map((option) => (
@@ -134,7 +130,7 @@ export const BookSearchWithTag: React.FC = () => {
               key={option}
               className="cursor-pointer px-4 py-2 hover:bg-gray-100"
               onMouseDown={(e) => {
-                e.preventDefault(); // Prevent input blur
+                e.preventDefault();
                 handleCommandSelect(option);
               }}
             >
@@ -144,7 +140,6 @@ export const BookSearchWithTag: React.FC = () => {
         </div>
       )}
 
-      {/* Search results dropdown */}
       {!showCommandDropdown && inputValue.trim() !== "" && (
         <div className="absolute left-0 right-0 mt-1 bg-white shadow rounded-md z-10 max-h-96 overflow-y-auto">
           {searchResults.map((item) => {
@@ -178,12 +173,9 @@ export const BookSearchWithTag: React.FC = () => {
         </div>
       )}
 
-      {/* Modal for detailed book information */}
       {selectedBook && (
         <div className="fixed inset-0 flex items-center justify-center z-50">
-          {/* Background overlay */}
           <div className="fixed inset-0 bg-black opacity-50" onClick={closeModal}></div>
-          {/* Detailed Card */}
           <Card className="relative z-10 max-w-md w-full">
             <CardHeader>
               <CardTitle>{selectedBook.volumeInfo.title}</CardTitle>
