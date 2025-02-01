@@ -1,4 +1,5 @@
 import { Library, LibrarySquare, Newspaper } from "lucide-react";
+import { useUser } from "@clerk/nextjs";
 
 import {
   Sidebar,
@@ -22,6 +23,9 @@ const items = [
     url: "/feed",
     icon: Newspaper,
   },
+];
+
+const protectedItems = [
   {
     title: "Library",
     url: "/library",
@@ -30,6 +34,8 @@ const items = [
 ];
 
 export function SidebarNav({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const { isSignedIn } = useUser();
+
   return (
     <Sidebar {...props}>
       <SidebarHeader>
@@ -65,6 +71,20 @@ export function SidebarNav({ ...props }: React.ComponentProps<typeof Sidebar>) {
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
+              {isSignedIn &&
+                protectedItems.map((item) => (
+                  <SidebarMenuItem key={item.title}>
+                    <SidebarMenuButton asChild>
+                      <Link
+                        href={item.url}
+                        className="text-gray-600 hover:text-gray-900 font-medium"
+                      >
+                        <item.icon />
+                        <span>{item.title}</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                ))}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
