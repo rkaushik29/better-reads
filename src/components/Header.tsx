@@ -10,7 +10,7 @@ import { Button } from '@/components/ui/button';
 
 const Header: React.FC = () => {
   return (
-    <header className="w-full h-16 bg-white shadow flex items-center px-4">
+    <header className="sticky top-0 w-full h-16 bg-white shadow flex items-center px-4 z-50">
       <div className="flex-shrink-0">
         <Link href="/" className="text-2xl font-bold text-gray-800">
           Better Reads
