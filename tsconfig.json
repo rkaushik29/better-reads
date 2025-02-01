@@ -17,6 +17,9 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
+  "ts-node": {
+    "esm": true
+  },
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "src/drizzle/migrate.ts"],
   "exclude": ["node_modules"]
 }
