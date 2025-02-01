@@ -10,7 +10,7 @@ export interface TagChipProps
 }
 
 const tagChipVariants = cva(
-  "inline-flex items-center rounded-md font-medium transition-colors",
+  "inline-flex items-center rounded-md font-medium transition-colors border-2",
   {
     variants: {
       size: {
@@ -18,10 +18,10 @@ const tagChipVariants = cva(
         md: "px-2 py-1 text-sm",
       },
       color: {
-        yellow: "bg-yellow-100 text-yellow-800",
-        red: "bg-red-100 text-red-800",
-        green: "bg-green-100 text-green-800",
-        blue: "bg-blue-100 text-blue-800",
+        yellow: "bg-yellow-100 text-yellow-800 border-yellow-800",
+        red: "bg-red-100 text-red-800 border-red-800",
+        green: "bg-green-100 text-green-800 border-green-800",
+        blue: "bg-blue-100 text-blue-800 border-blue-800",
       },
     },
     defaultVariants: {
@@ -37,12 +37,9 @@ export const TagChip: React.FC<TagChipProps> = ({
   className,
   ...props
 }) => {
-  const bgColor = `bg-${color}-100`;
-  const textColor = `text-${color}-800`;
-
   return (
     <div
-      className={clsx(tagChipVariants({ size, className }), bgColor, textColor)}
+      className={clsx(tagChipVariants({ size, color, className }))}
       {...props}
     >
       {label}

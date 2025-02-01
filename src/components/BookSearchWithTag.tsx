@@ -102,27 +102,28 @@ export const BookSearchWithTag: React.FC = () => {
 
   return (
     <div className="relative">
-      <div className="flex items-center min-w-[10rem] bg-white rounded-md overflow-hidden">
+      <div className="flex flex-row gap-2">
         {selectedTag && (
-          <div className="pl-2 cursor-pointer">
+          <div className="flex items-center justify-center pl-2 cursor-pointer bg-transparent">
             <TagChip
               label={selectedTag.charAt(0).toUpperCase() + selectedTag.slice(1)}
               color={selectedTag === "book" ? "blue" : "red"}
-              size="sm"
+              size="md"
               onClick={() => setSelectedTag(null)}
             />
           </div>
         )}
-        <BookSearchInput
-          ref={inputRef}
-          value={inputValue}
-          onChange={handleInputChange}
-          icon={<Search />}
-          placeholder="Search or type / for commands"
-          className="flex-1 bg-white"
-        />
+        <div className="flex items-center min-w-[10rem] bg-white rounded-md overflow-hidden">
+          <BookSearchInput
+            ref={inputRef}
+            value={inputValue}
+            onChange={handleInputChange}
+            icon={<Search />}
+            placeholder="Search or type / for commands"
+            className="flex-1 bg-white"
+          />
+        </div>
       </div>
-
       {showCommandDropdown && (
         <div className="absolute left-0 right-0 mt-1 bg-white shadow rounded-md z-10">
           {commandOptions.map((option) => (
