@@ -14,6 +14,7 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { SidebarNav } from "@/components/SidebarNav";
+import { BookSearchWithTag } from "@/components/BookSearchWithTag";
 
 const quicksand = Quicksand({
   subsets: ['latin'],
@@ -39,7 +40,12 @@ function App({ Component, pageProps }: AppProps) {
         <SidebarProvider>
           <SidebarNav />
           <SidebarInset>
-            <SidebarTrigger className="p-1 m-1" />
+            <div className="flex justify-between items-center">
+              <SidebarTrigger className="p-1 m-1" />
+              <div className="p-3">
+                <BookSearchWithTag />
+              </div>
+            </div>
             <Component {...pageProps} />
           </SidebarInset>
         </SidebarProvider>

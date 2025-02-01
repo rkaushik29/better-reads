@@ -32,7 +32,6 @@ export const BookSearchWithTag: React.FC = () => {
   const [totalItems, setTotalItems] = useState<number | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  // Show the command dropdown if no tag is selected and input starts with "/"
   useEffect(() => {
     if (!selectedTag && inputValue.startsWith("/")) {
       setShowCommandDropdown(true);
@@ -41,7 +40,6 @@ export const BookSearchWithTag: React.FC = () => {
     }
   }, [inputValue, selectedTag]);
 
-  // When the input value changes (and is not a command), reset pagination and search results
   useEffect(() => {
     if (!showCommandDropdown && inputValue.trim() !== "") {
       setPage(1);
@@ -51,9 +49,7 @@ export const BookSearchWithTag: React.FC = () => {
     }
   }, [inputValue, showCommandDropdown]);
 
-  // Debounced effect to search books when query changes
   useEffect(() => {
-    // Only trigger search if we're not showing command options and there's a query
     if (!showCommandDropdown && inputValue.trim() !== "") {
       const timer = setTimeout(() => {
         fetchBooks(inputValue, page)
@@ -73,7 +69,6 @@ export const BookSearchWithTag: React.FC = () => {
 
   const handleCommandSelect = (option: SearchTag) => {
     setSelectedTag(option);
-    // Remove any leading "/" from the query
     const newValue = inputValue.replace(/^\/+/, "");
     setInputValue(newValue);
     setShowCommandDropdown(false);
@@ -84,20 +79,17 @@ export const BookSearchWithTag: React.FC = () => {
     setInputValue(e.target.value);
   };
 
-  // Handler for "Load more" pagination click
   const handleLoadMore = () => {
     setPage((prev) => prev + 1);
   };
 
   return (
     <div className="relative">
-      <div className="flex items-center border border-input bg-foreground rounded-md overflow-hidden">
+      <div className="flex items-center min-w-42 bg-white rounded-md overflow-hidden">
         {selectedTag && (
           <div className="pl-2 cursor-pointer">
             <TagChip
-              label={
-                selectedTag.charAt(0).toUpperCase() + selectedTag.slice(1)
-              }
+              label={selectedTag.charAt(0).toUpperCase() + selectedTag.slice(1)}
               color={selectedTag === "book" ? "blue" : "red"}
               size="sm"
               onClick={() => setSelectedTag(null)}
@@ -110,11 +102,10 @@ export const BookSearchWithTag: React.FC = () => {
           onChange={handleInputChange}
           icon={<Search />}
           placeholder="Search or type / for commands"
-          className="flex-1 bg-foreground"
+          className="flex-1 bg-white"
         />
       </div>
 
-      {/* Dropdown for command options (when input starts with "/") */}
       {showCommandDropdown && (
         <div className="absolute left-0 right-0 mt-1 bg-white shadow rounded-md z-10">
           {commandOptions.map((option) => (
@@ -122,7 +113,7 @@ export const BookSearchWithTag: React.FC = () => {
               key={option}
               className="cursor-pointer px-4 py-2 hover:bg-gray-100"
               onMouseDown={(e) => {
-                e.preventDefault(); // Prevents input from losing focus
+                e.preventDefault();
                 handleCommandSelect(option);
               }}
             >
@@ -132,14 +123,12 @@ export const BookSearchWithTag: React.FC = () => {
         </div>
       )}
 
-      {/* Dropdown for search results */}
       {!showCommandDropdown && inputValue.trim() !== "" && (
         <div className="absolute left-0 right-0 mt-1 bg-white shadow rounded-md z-10 max-h-96 overflow-y-auto">
           {searchResults.map((item) => (
             <div
               key={item.id}
               className="cursor-pointer px-4 py-2 hover:bg-gray-100 border-b border-gray-200"
-              // You can add onClick behavior here to select a book or navigate
               onMouseDown={(e) => e.preventDefault()}
             >
               {item.volumeInfo.title}
@@ -156,7 +145,6 @@ export const BookSearchWithTag: React.FC = () => {
               Load more
             </div>
           )}
-          {/* If no results found */}
           {searchResults.length === 0 && (
             <div className="px-4 py-2 text-gray-500">No results found.</div>
           )}
