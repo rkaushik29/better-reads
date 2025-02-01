@@ -1,10 +1,10 @@
-import type React from "react";
+import React from "react";
 import { cva, type VariantProps } from "class-variance-authority";
 import clsx from "clsx";
 
 export interface TagChipProps
   extends React.HTMLAttributes<HTMLDivElement>,
-  VariantProps<typeof tagChipVariants> {
+    VariantProps<typeof tagChipVariants> {
   label: string;
   color: "yellow" | "red" | "green" | "blue";
 }
@@ -27,7 +27,7 @@ const tagChipVariants = cva(
     defaultVariants: {
       size: "md",
     },
-  }
+  },
 );
 
 export const TagChip: React.FC<TagChipProps> = ({
