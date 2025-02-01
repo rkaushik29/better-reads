@@ -7,6 +7,12 @@ import {
   ClerkProvider,
 } from "@clerk/nextjs";
 import "@/styles/globals.css";
+import { Quicksand } from "next/font/google";
+
+const quicksand = Quicksand({
+  subsets: ['latin'],
+  variable: '--font-quicksand',
+});
 
 const trpc = createTRPCNext<AppRouter>({
   config() {
@@ -23,7 +29,9 @@ const trpc = createTRPCNext<AppRouter>({
 function App({ Component, pageProps }: AppProps) {
   return (
     <ClerkProvider>
-      <Component {...pageProps} />
+      <main className={`${quicksand.variable} font-sans`}>
+        <Component {...pageProps} />
+      </main>
     </ClerkProvider>
   );
 }
