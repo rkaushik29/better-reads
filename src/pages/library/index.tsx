@@ -74,7 +74,11 @@ export default function Library() {
             key={book.id}
           >
             <div className="group flex flex-col items-center justify-center gap-2">
-              <img src={book.imageLinks ?? ""} alt={book.title} />
+              <img 
+                src={book.imageLinks ?? ""} 
+                alt={book.title} 
+                className="h-48 w-full object-contain"
+              />
               <div className="flex items-center">
                 {book.status && renderStatusIcon(book.status)}
               </div>
