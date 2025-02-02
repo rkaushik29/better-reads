@@ -20,7 +20,7 @@ import { Button } from "./ui/button";
 const items = [
   {
     title: "Feed",
-    url: "/feed",
+    url: "/",
     icon: Newspaper,
   },
 ];
