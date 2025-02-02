@@ -157,12 +157,12 @@ export function CalendarTimeline({ events }: CalendarTimelineProps) {
                         <p>{event.title}</p>
                         <p>
                           Start:{" "}
-                          {format(parseISO(event.startDate), "MMM d, yyyy")}
+                          {event.startDate ? format(parseISO(event.startDate), "MMM d, yyyy") : "N/A"}
                         </p>
                         {event.endDate && (
                           <p>
                             End:{" "}
-                            {format(parseISO(event.endDate), "MMM d, yyyy")}
+                            {event.endDate ? format(parseISO(event.endDate), "MMM d, yyyy") : "N/A"}
                           </p>
                         )}
                         <p>Rating: {event.rating}</p>

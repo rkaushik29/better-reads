@@ -11,6 +11,25 @@ import {
 import { api } from "@/utils/trpc";
 import { useUser } from "@clerk/nextjs";
 
+interface GoogleBookInfo {
+  title: string;
+  authors?: string[];
+  publisher?: string;
+  publishedDate?: string;
+  category?: string;
+  description?: string;
+  printedPageCount?: number;
+  maturityRating?: string;
+  imageLinks: {
+    thumbnail: string;
+  };
+  previewLink?: string;
+  startDate?: Date;
+  endDate?: Date;
+  rating?: number;
+  review?: string;
+}
+
 interface BookDialogProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   book: any;
@@ -41,8 +60,7 @@ export const BookDialog: React.FC<BookDialogProps> = ({
     },
   });
 
-  // @eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const handleAddToLibrary = async (book: any, id: string) => {
+  const handleAddToLibrary = async (book: GoogleBookInfo, id: string) => {
     const data = {
       userId: user.user?.id || "",
       googleBookId: id,

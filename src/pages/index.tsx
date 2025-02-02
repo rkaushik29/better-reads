@@ -143,7 +143,7 @@ export default function Home() {
                         size="icon"
                         onClick={() => {
                           setSelectedBook(book);
-                          if (!fetchedBookIds.has(book.id)) {
+                          if (!fetchedBookIds.has(book.id.toString())) {
                             setIsDialogOpen(true);
                             refetchSnippet();
                           }

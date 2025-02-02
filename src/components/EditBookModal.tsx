@@ -29,8 +29,8 @@ export function EditLibraryBookModal({ book, onUpdate }: EditLibraryBookModalPro
       description: book.description || "",
       status: book.status || "",
       // Store dates as strings in YYYY-MM-DD format
-      startDate: book.startDate ? new Date(book.startDate).toISOString().split("T")[0] : "",
-      endDate: book.endDate ? new Date(book.endDate).toISOString().split("T")[0] : "",
+      startDate: book.startDate ? new Date(book.startDate) : undefined,
+      endDate: book.endDate ? new Date(book.endDate) : undefined,
     },
   });
 
@@ -58,8 +58,8 @@ export function EditLibraryBookModal({ book, onUpdate }: EditLibraryBookModalPro
       category: book.category || "",
       description: book.description || "",
       status: book.status || "",
-      startDate: book.startDate ? new Date(book.startDate).toISOString().split("T")[0] : "",
-      endDate: book.endDate ? new Date(book.endDate).toISOString().split("T")[0] : "",
+      startDate: book.startDate ? new Date(book.startDate) : undefined,
+      endDate: book.endDate ? new Date(book.endDate) : undefined,
     });
   }, [book, reset]);
 
@@ -155,7 +155,7 @@ export function EditLibraryBookModal({ book, onUpdate }: EditLibraryBookModalPro
                   mode="single"
                   selected={startDateValue ? new Date(startDateValue) : undefined}
                   onSelect={(date: Date | undefined) => {
-                    setValue("startDate", date ? date.toISOString().split("T")[0] : "");
+                    setValue("startDate", date ? date : undefined);
                   }}
                 />
               </HoverCardContent>
@@ -176,7 +176,7 @@ export function EditLibraryBookModal({ book, onUpdate }: EditLibraryBookModalPro
                   mode="single"
                   selected={endDateValue ? new Date(endDateValue) : undefined}
                   onSelect={(date: Date | undefined) => {
-                    setValue("endDate", date ? date.toISOString().split("T")[0] : "");
+                    setValue("endDate", date ? date : undefined);
                   }}
                 />
               </HoverCardContent>
