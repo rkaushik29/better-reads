@@ -2,8 +2,18 @@ import React, { useState, useRef, useEffect } from "react";
 import BookSearchInput from "./BookSearchInput";
 import TagChip from "./TagChip";
 import { Search } from "lucide-react";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogFooter,
+  DialogTitle,
+  DialogDescription,
+  DialogClose,
+} from "@/components/ui/dialog";
+import BookDialog from "./BookDialog";
 
 type SearchTag = "book" | "author";
 
@@ -28,13 +38,14 @@ export const BookSearchWithTag: React.FC = () => {
   const [selectedTag, setSelectedTag] = useState<SearchTag | null>(null);
   const [inputValue, setInputValue] = useState("");
   const [showCommandDropdown, setShowCommandDropdown] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [searchResults, setSearchResults] = useState<any[]>([]);
   const [page, setPage] = useState(1);
   const [totalItems, setTotalItems] = useState<number | null>(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [selectedBook, setSelectedBook] = useState<any>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  // Show command dropdown if input starts with "/" and no tag is selected.
   useEffect(() => {
     if (!selectedTag && inputValue.startsWith("/")) {
       setShowCommandDropdown(true);
@@ -43,7 +54,6 @@ export const BookSearchWithTag: React.FC = () => {
     }
   }, [inputValue, selectedTag]);
 
-  // Reset search results and pagination when query changes.
   useEffect(() => {
     if (!showCommandDropdown && inputValue.trim() !== "") {
       setPage(1);
@@ -88,6 +98,7 @@ export const BookSearchWithTag: React.FC = () => {
     setPage((prev) => prev + 1);
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleResultClick = (item: any) => {
     if (item.selfLink) {
       localStorage.setItem("selectedBookSelfLink", item.selfLink);
@@ -175,60 +186,20 @@ export const BookSearchWithTag: React.FC = () => {
         </div>
       )}
 
-      {selectedBook && (
-        <div className="fixed inset-0 flex items-center justify-center z-50">
-          <div className="fixed inset-0 bg-black opacity-50" onClick={closeModal}></div>
-          <Card className="relative z-10 max-w-md w-full">
-            <CardHeader>
-              <CardTitle>{selectedBook.volumeInfo.title}</CardTitle>
-              <CardDescription>
-                {selectedBook.volumeInfo.authors
-                  ? selectedBook.volumeInfo.authors.join(", ")
-                  : "Unknown Author"}
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              {selectedBook.volumeInfo.imageLinks && (
-                <img
-                  src={selectedBook.volumeInfo.imageLinks.thumbnail}
-                  alt={selectedBook.volumeInfo.title}
-                  className="mb-4 mx-auto"
-                />
-              )}
-              <div>
-                <strong>Printed Page Count: </strong>
-                {selectedBook.volumeInfo.printedPageCount || "N/A"}
-              </div>
-              <div>
-                <strong>Maturity Rating: </strong>
-                {selectedBook.volumeInfo.maturityRating || "N/A"}
-              </div>
-              <div>
-                <strong>Publisher: </strong>
-                {selectedBook.volumeInfo.publisher || "N/A"}
-              </div>
-              <div>
-                <strong>Published Date: </strong>
-                {selectedBook.volumeInfo.publishedDate || "N/A"}
-              </div>
-              <div className="mt-4">
-                <strong>Description: </strong>
-                <p className="text-sm text-gray-700">
-                  {selectedBook.volumeInfo.description ||
-                    "No description available."}
-                </p>
-              </div>
-            </CardContent>
-            <CardFooter>
-              <Button
-                className="px-4 py-2 bg-blue-500 text-white rounded-md"
-                onClick={closeModal}
-              >
-                Close
-              </Button>
-            </CardFooter>
-          </Card>
+      {!showCommandDropdown && inputValue.trim() === "" && (
+        <div className="mt-1 bg-white shadow rounded-md z-10 p-4 text-center text-gray-500">
+          No recent searches.
         </div>
+      )}
+
+      {selectedBook && (
+        <BookDialog
+          book={selectedBook}
+          open={true}
+          onOpenChange={(open) => !open && closeModal()}
+          // TODO: Implement this @Hiba
+          onAddToLibrary={() => {}}
+        />
       )}
     </div>
   );

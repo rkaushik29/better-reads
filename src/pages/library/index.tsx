@@ -3,10 +3,9 @@ import React from "react";
 
 export default function Library() {
   return (
-    <div>
-      <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold">Library</h1>
-        <Button>Add Book</Button>
+    <div className="flex justify-center items-center max-h-12">
+      <div className="flex items-center">
+        <h1 className="text-3xl font-bold">Library</h1>
       </div>
     </div>
   );
