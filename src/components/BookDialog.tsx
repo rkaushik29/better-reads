@@ -58,6 +58,8 @@ export const BookDialog: React.FC<BookDialogProps> = ({
     };
 
     await createBook({ data });
+
+    onOpenChange(false);
   };
 
   const renderDescription = (desc: string) => {
@@ -144,4 +146,3 @@ export const BookDialog: React.FC<BookDialogProps> = ({
 };
 
 export default BookDialog;
-
