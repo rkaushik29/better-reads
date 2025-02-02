@@ -103,7 +103,7 @@ export const BookSearchWithTag: React.FC = () => {
     <div className="relative w-full mt-4">
       <div className="flex flex-row gap-2 w-full">
         {selectedTag && (
-          <div className="flex items-center justify-center pl-2 cursor-pointer bg-slate-300">
+          <div className="flex items-center justify-center cursor-pointer">
             <TagChip
               label={selectedTag.charAt(0).toUpperCase() + selectedTag.slice(1)}
               color={selectedTag === "book" ? "blue" : "red"}
@@ -123,6 +123,23 @@ export const BookSearchWithTag: React.FC = () => {
           />
         </div>
       </div>
+
+      {showCommandDropdown && (
+        <div className="absolute w-full mt-1 bg-white shadow rounded-md z-20">
+          {commandOptions.map((option) => (
+            <div
+              key={option}
+              className="cursor-pointer px-4 py-2 hover:bg-gray-100"
+              onMouseDown={(e) => {
+                e.preventDefault();
+                handleCommandSelect(option);
+              }}
+            >
+              /{option} - Search by {option}
+            </div>
+          ))}
+        </div>
+      )}
 
       {!showCommandDropdown && inputValue.trim() !== "" && (
         <div className="mt-1 bg-white shadow rounded-md z-10 max-h-96 overflow-y-auto">
