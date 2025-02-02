@@ -17,7 +17,7 @@ export const getAllBooksService = async (): Promise<(UserBooksSelect & { userNam
   const users = await getAllUsers();
   
   return books.map(book => {
-    const user = users.find(u => String(u.id) === String(book.userId));
+    const user = users.find(u => String(u.authId) === String(book.userId));
     return {
       ...book,
       userName: user?.name ?? 'Unknown User'
