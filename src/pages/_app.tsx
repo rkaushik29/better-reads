@@ -56,7 +56,7 @@ const App: AppType = ({ Component, pageProps }) => {
               <SidebarNav />
               <SidebarInset>
                 <div className="flex justify-between items-center">
-                  <SidebarTrigger className="p-1 m-1" />
+                  <SidebarTrigger className="p-1 m-1">Menu</SidebarTrigger>
                   <div className="p-3">
                     <BookSearchDialog open={isDialogOpen} onOpenChange={setIsDialogOpen} />
                   </div>
