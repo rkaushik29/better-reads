@@ -33,8 +33,13 @@ export const BookDialog: React.FC<BookDialogProps> = ({
 }) => {
   const [showFullDescription, setShowFullDescription] = useState(false);
   const user = useUser();
+  const trpcUtils = api.useUtils();
 
-  const { mutateAsync: createBook } = api.books.create.useMutation();
+  const { mutateAsync: createBook } = api.books.create.useMutation({
+    onSuccess: () => {
+      trpcUtils.users.getAllBooks.invalidate();
+    },
+  });
 
   const handleAddToLibrary = async (book: any, id: string) => {
     const data = {
