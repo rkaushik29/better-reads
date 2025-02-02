@@ -1,7 +1,8 @@
-import { router } from '../trpc';
+import { router } from "../trpc";
+import { booksRouter } from "./books";
 
 export const appRouter = router({
-  // Define your procedures here
+  books: booksRouter,
 });
 
 export type AppRouter = typeof appRouter;
