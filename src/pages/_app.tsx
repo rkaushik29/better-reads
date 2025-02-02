@@ -39,8 +39,6 @@ const App: AppType = ({ Component, pageProps }) => {
     );
   }, []);
 
-  if (!trpcClient) return null;
-
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
@@ -52,6 +50,8 @@ const App: AppType = ({ Component, pageProps }) => {
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, []);
+
+  if (!trpcClient) return null;
   
   return (
     <api.Provider client={trpcClient} queryClient={queryClient}>
