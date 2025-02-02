@@ -2,17 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import BookSearchInput from "./BookSearchInput";
 import TagChip from "./TagChip";
 import { Search } from "lucide-react";
-import { Button } from "@/components/ui/button";
 
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogFooter,
-  DialogTitle,
-  DialogDescription,
-  DialogClose,
-} from "@/components/ui/dialog";
 import BookDialog from "./BookDialog";
 
 type SearchTag = "book" | "author";

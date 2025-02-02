@@ -143,3 +143,5 @@ export const Toolbar = memo(
     )
   },
 )
+
+Toolbar.displayName = 'Toolbar'
