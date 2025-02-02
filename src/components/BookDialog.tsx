@@ -9,7 +9,6 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { api } from "@/utils/trpc";
-import { UserBooksInsert } from "@/drizzle/schema";
 import { useUser } from "@clerk/nextjs";
 
 interface BookDialogProps {

@@ -4,7 +4,6 @@ import TagChip from "./TagChip";
 import { Search } from "lucide-react";
 
 import BookDialog from "./BookDialog";
-import { api } from "@/utils/trpc";
 
 type SearchTag = "book" | "author";
 
