@@ -1,32 +1,12 @@
-import { BookCard } from "@/components/Card";
-import { Modal } from "@/components/Modal";
-import { Button } from "@/components/ui/button";
 import { UserBooksUpdate } from "@/drizzle/schema";
 import { api } from "@/utils/trpc";
 import { useUser } from "@clerk/nextjs";
-import { Pencil, Trash, Check, Clock, Search } from "lucide-react";
 import React from "react";
-import { useForm } from "react-hook-form";
 import { LibraryBookCard } from "@/components/LibraryBookCard";
-import { Input } from "@/components/ui/input";
-
-const renderStatusIcon = (status: string) => {
-  switch (status) {
-    case "read":
-        return <Check className="text-green-500" />;
-    case "reading":
-        return <Clock className="text-yellow-500" />;
-    case "wantToRead":
-        return <Search className="text-gray-500" />;
-    default:
-      return null;
-  }
-};
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export default function Library() {
   const { user, isLoaded } = useUser();
-
-  const { register, handleSubmit } = useForm();
 
   const { data: library, refetch } = api.books.find.useQuery(user?.id ?? "", {
     enabled: !!isLoaded,
@@ -47,13 +27,19 @@ export default function Library() {
       rating: Number(data.rating),
       status: data.status,
     };
-    
+
     updateBook({
       id: Number(id),
       data: {
         ...dataToUpdate,
-        startDate: dataToUpdate.startDate instanceof Date ? dataToUpdate.startDate.toISOString() : "",
-        endDate: dataToUpdate.endDate instanceof Date ? dataToUpdate.endDate.toISOString() : "",
+        startDate:
+          dataToUpdate.startDate instanceof Date
+            ? dataToUpdate.startDate.toISOString()
+            : "",
+        endDate:
+          dataToUpdate.endDate instanceof Date
+            ? dataToUpdate.endDate.toISOString()
+            : "",
       },
     });
   };
@@ -67,11 +53,35 @@ export default function Library() {
       <div className="flex justify-center w-full">
         <h1 className="text-3xl font-bold">Library</h1>
       </div>
-      <div className="flex gap-4 mt-4">
-        {library?.map((book) => (
-          <LibraryBookCard key={book.id} book={book} onUpdate={handleUpdate} onDelete={handleDelete} />
-        ))}
-      </div>
+      <Tabs defaultValue="gallery">
+        <TabsList className="grid w-fit grid-cols-3">
+          <TabsTrigger value="gallery" className="data-[state=active]:bg-green-500 data-[state=active]:text-white data-[state=active]:font-bold">Gallery</TabsTrigger>
+          <TabsTrigger value="progress" className="data-[state=active]:bg-green-500 data-[state=active]:text-white data-[state=active]:font-bold">Progress</TabsTrigger>
+          <TabsTrigger value="timeline" className="data-[state=active]:bg-green-500 data-[state=active]:text-white data-[state=active]:font-bold">Timeline</TabsTrigger>
+        </TabsList>
+        <TabsContent value="gallery">
+          <div className="flex gap-4 mt-4 flex-wrap justify-center">
+            {library?.map((book) => (
+              <LibraryBookCard
+                key={book.id}
+                book={book}
+                onUpdate={handleUpdate}
+                onDelete={handleDelete}
+              />
+            ))}
+          </div>
+        </TabsContent>
+        <TabsContent value="progress">
+          <div className="mt-4">
+            <p>Progress content goes here.</p>
+          </div>
+        </TabsContent>
+        <TabsContent value="timeline">
+          <div className="mt-4">
+            <p>Timeline content goes here.</p>
+          </div>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }

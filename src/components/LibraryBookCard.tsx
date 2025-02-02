@@ -60,101 +60,101 @@ export function LibraryBookCard({ book, onUpdate, onDelete }: LibraryBookCardPro
   };
 
   return (
-    <BookCard title={book.title} description={book.authors ?? ""}>
-      <div className="group flex flex-col items-center justify-center gap-2">
-        <img
-          src={book.imageLinks ?? ""}
-          alt={book.title}
-          className="h-48 w-full object-contain"
-        />
+    <div className="relative group">
+      <BookCard title={book.title} description={book.authors ?? ""}>
+        <div className="flex flex-col items-center justify-center gap-2">
+          <img
+            src={book.imageLinks ?? ""}
+            alt={book.title}
+            className="h-48 w-full object-contain"
+          />
 
-        <div className="flex items-center">
-          {book.status && renderStatusIcon(book.status)}
+          <div className="flex items-center">
+            {book.status && renderStatusIcon(book.status)}
+          </div>
+
+          <div className="text-sm text-gray-500">{book.printedPageCount}</div>
         </div>
-
-        <div className="text-sm text-gray-500">{book.printedPageCount}</div>
-
-        <div className="flex gap-2 p-2 group-hover:flex items-center">
-          <Modal
-            title={`Edit ${book.title}`}
-            trigger={
-              <div className="cursor-pointer">
-                <Pencil className="h-4 w-4" />
+      </BookCard>
+      <div className="absolute -top-2 -right-2 flex gap-1 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+        <Modal
+          title={`Edit ${book.title}`}
+          trigger={
+            <Button className="bg-green-500 hover:bg-green-600 rounded-full text-white" size="icon">
+              <Pencil className="h-4 w-4" />
+            </Button>
+          }
+        >
+          <form onSubmit={handleSubmit(handleUpdate)}>
+            <div className="flex flex-col gap-2">
+              <div className="flex gap-2">
+                <label className="flex items-center gap-2">
+                  <input
+                    type="radio"
+                    value="wantToRead"
+                    {...register("status")}
+                    defaultChecked={book.status === "wantToRead"}
+                  />
+                  TBR
+                </label>
+                <label className="flex items-center gap-2">
+                  <input
+                    type="radio"
+                    value="reading"
+                    {...register("status")}
+                    defaultChecked={book.status === "reading"}
+                  />
+                  Reading
+                </label>
+                <label className="flex items-center gap-2">
+                  <input
+                    type="radio"
+                    value="read"
+                    {...register("status")}
+                    defaultChecked={book.status === "read"}
+                  />
+                  Read
+                </label>
               </div>
-            }
-          >
-            <form onSubmit={handleSubmit(handleUpdate)}>
-              <div className="flex flex-col gap-2">
-                <div className="flex gap-2">
-                  <label className="flex items-center gap-2">
-                    <input
-                      type="radio"
-                      value="wantToRead"
-                      {...register("status")}
-                      defaultChecked={book.status === "wantToRead"}
-                    />
-                    TBR
-                  </label>
-                  <label className="flex items-center gap-2">
-                    <input
-                      type="radio"
-                      value="reading"
-                      {...register("status")}
-                      defaultChecked={book.status === "reading"}
-                    />
-                    Reading
-                  </label>
-                  <label className="flex items-center gap-2">
-                    <input
-                      type="radio"
-                      value="read"
-                      {...register("status")}
-                      defaultChecked={book.status === "read"}
-                    />
-                    Read
-                  </label>
-                </div>
-                <Input
-                  type="date"
-                  defaultValue={
-                    book.startDate
-                      ? new Date(book.startDate).toISOString().split("T")[0]
-                      : ""
-                  }
-                  {...register("startDate")}
-                />
-                <Input
-                  type="date"
-                  defaultValue={
-                    book.endDate
-                      ? new Date(book.endDate).toISOString().split("T")[0]
-                      : ""
-                  }
-                  {...register("endDate")}
-                />
-                <Input
-                  type="number"
-                  defaultValue={book.rating ?? 0}
-                  {...register("rating")}
-                  placeholder="Rating"
-                  max={5}
-                  min={0}
-                />
-                <Button type="submit">Save</Button>
-              </div>
-            </form>
-          </Modal>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={handleDeleteButton}
-            className="text-red-500 hover:text-red-600"
-          >
-            <Trash className="h-4 w-4" />
-          </Button>
-        </div>
+              <Input
+                type="date"
+                defaultValue={
+                  book.startDate
+                    ? new Date(book.startDate).toISOString().split("T")[0]
+                    : ""
+                }
+                {...register("startDate")}
+              />
+              <Input
+                type="date"
+                defaultValue={
+                  book.endDate
+                    ? new Date(book.endDate).toISOString().split("T")[0]
+                    : ""
+                }
+                {...register("endDate")}
+              />
+              <Input
+                type="number"
+                defaultValue={book.rating ?? 0}
+                {...register("rating")}
+                placeholder="Rating"
+                max={5}
+                min={0}
+              />
+              <Button type="submit">Save</Button>
+            </div>
+          </form>
+        </Modal>
+        <Button
+          onClick={handleDeleteButton}
+          className="bg-red-500 text-white rounded-full p-1 shadow-lg hover:bg-red-600"
+          size="icon"
+        >
+          <Trash className="h-4 w-4" />
+        </Button>
       </div>
-    </BookCard>
+    </div>
   );
 }
 
