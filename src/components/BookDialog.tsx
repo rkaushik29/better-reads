@@ -45,7 +45,7 @@ export const BookDialog: React.FC<BookDialogProps> = ({
       publisher: book.publisher,
       publishedDate: book.publishedDate,
       category: book.category,
-      status: book.status,
+      status: "wantToRead",
       description: book.description,
       printedPageCount: book.printedPageCount,
       maturityRating: book.maturityRating,

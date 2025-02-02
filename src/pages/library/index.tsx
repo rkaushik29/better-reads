@@ -4,9 +4,23 @@ import { Button } from "@/components/ui/button";
 import { UserBooksUpdate } from "@/drizzle/schema";
 import { api } from "@/utils/trpc";
 import { useUser } from "@clerk/nextjs";
-import { Pencil, Trash } from "lucide-react";
-import React, { useState } from "react";
-import { useForm, SubmitHandler } from "react-hook-form";
+import { Pencil, Trash, Check, Clock, Search } from "lucide-react";
+import React from "react";
+import { useForm } from "react-hook-form";
+import { Input } from "@/components/ui/input";
+
+const renderStatusIcon = (status: string) => {
+  switch (status) {
+    case "read":
+        return <Check className="text-green-500" />;
+    case "reading":
+        return <Clock className="text-yellow-500" />;
+    case "wantToRead":
+        return <Search className="text-gray-500" />;
+    default:
+      return null;
+  }
+};
 
 export default function Library() {
   const { user, isLoaded } = useUser();
@@ -37,8 +51,8 @@ export default function Library() {
       id: Number(id),
       data: {
         ...dataToUpdate,
-        startDate: dataToUpdate.startDate instanceof Date ? dataToUpdate.startDate : null,
-        endDate: dataToUpdate.endDate instanceof Date ? dataToUpdate.endDate : null,
+        startDate: dataToUpdate.startDate instanceof Date ? dataToUpdate.startDate : "",
+        endDate: dataToUpdate.endDate instanceof Date ? dataToUpdate.endDate : "",
       },
     });
   };
@@ -61,49 +75,74 @@ export default function Library() {
           >
             <div className="group flex flex-col items-center justify-center gap-2">
               <img src={book.imageLinks ?? ""} alt={book.title} />
-
-              <div className="text-sm text-gray-500">{book.status}</div>
+              <div className="flex items-center">
+                {book.status && renderStatusIcon(book.status)}
+              </div>
               <div className="text-sm text-gray-500">
                 {book.printedPageCount}
               </div>
 
               <div className="flex gap-2 p-2 group-hover:flex items-center">
                 <Modal
-                  title="Edit Book"
+                  title={`Edit ${book.title}`}
                   trigger={
                     <div className="cursor-pointer">
                       <Pencil className="h-4 w-4" />
                     </div>
                   }
-                  primaryAction={<Button type="submit">Save</Button>}
                 >
                   <form
                     onSubmit={handleSubmit((data) =>
                       handleUpdate(book.id, data),
                     )}
                   >
-                    <div>
-                      <input
-                        type="text"
-                        {...register("status")}
-                        defaultValue={book.status ?? ""}
-                        placeholder="Status (Reading/Read)"
-                      />
-                      <input
+                    <div className="flex flex-col gap-2">
+                      <div className="flex gap-2">
+                      <label className="flex items-center gap-2">
+                          <input
+                            type="radio"
+                            value="wantToRead"
+                            {...register("status")}
+                            defaultChecked={book.status === "wantToRead"}
+                          />
+                          TBR
+                        </label>
+                        <label className="flex items-center gap-2">
+                          <input
+                            type="radio"
+                            value="reading"
+                            {...register("status")}
+                            defaultChecked={book.status === "reading"}
+                          />
+                          Reading
+                        </label>
+                        <label className="flex items-center gap-2">
+                          <input
+                            type="radio"
+                            value="read"
+                            {...register("status")}
+                            defaultChecked={book.status === "read"}
+                          />
+                          Read
+                        </label>
+                      </div>
+                      <Input
                         type="date"
-                        defaultValue={book.startDate ?? ""}
+                        defaultValue={book.startDate ? new Date(book.startDate).toISOString().split('T')[0] : ""}
                         {...register("startDate")}
                       />
-                      <input
+                      <Input
                         type="date"
-                        defaultValue={book.endDate ?? ""}
+                        defaultValue={book.endDate ? new Date(book.endDate).toISOString().split('T')[0] : ""}
                         {...register("endDate")}
                       />
-                      <input
+                      <Input
                         type="number"
                         defaultValue={book.rating ?? 0}
                         {...register("rating")}
                         placeholder="Rating"
+                        max={5}
+                        min={0}
                       />
                       <Button type="submit">Save</Button>
                     </div>
