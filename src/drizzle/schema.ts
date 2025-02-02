@@ -58,12 +58,14 @@ export const annotations = pgTable("annotations", {
 /**
  * Create Select Schemas using drizzle-zod.
  */
+export const usersSelectSchema = createSelectSchema(users);
 export const userBooksSelectSchema = createSelectSchema(user_books);
 export const annotationsSelectSchema = createSelectSchema(annotations);
 
 /**
  * Create Insert Schemas using drizzle-zod.
  */
+export const usersInsertSchema = createInsertSchema(users);
 export const userBooksInsertSchema = createInsertSchema(user_books);
 export const annotationsInsertSchema = createInsertSchema(annotations);
 
@@ -129,6 +131,9 @@ export const annotationsDeleteSchema = z.object({
 /**
  * Export inferred types for type-safe usage elsewhere.
  */
+export type UsersSelect = z.infer<typeof usersSelectSchema>;
+export type UsersInsert = z.infer<typeof usersInsertSchema>;
+
 export type UserBooksSelect = z.infer<typeof userBooksSelectSchema>;
 export type UserBooksInsert = z.infer<typeof refinedUserBooksInsertSchema>;
 export type UserBooksUpdate = z.infer<typeof userBooksUpdateSchema>;
