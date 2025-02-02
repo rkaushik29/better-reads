@@ -25,15 +25,21 @@ const quicksand = Quicksand({
 const App: AppType = ({ Component, pageProps }) => {
   const [queryClient] = useState(() => new QueryClient());
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [trpcClient] = useState(() => 
-    api.createClient({
-      links: [
-        httpBatchLink({
-          url: `${window.location.origin}/api/trpc`,
-        }),
-      ],
-    })
-  );
+  const [trpcClient, setTrpcClient] = useState<ReturnType<typeof api.createClient> | undefined>(undefined);
+
+  useEffect(() => {
+    setTrpcClient(
+      api.createClient({
+        links: [
+          httpBatchLink({
+            url: `/api/trpc`,
+          }),
+        ],
+      })
+    );
+  }, []);
+
+  if (!trpcClient) return null;
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
