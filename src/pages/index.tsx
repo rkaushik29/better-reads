@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useUser } from "@clerk/nextjs";
 import { api } from "@/utils/trpc";
 import { motion } from "framer-motion";
@@ -12,11 +12,52 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Heart, MessageCircle, WandSparkles } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 export default function Home() {
   const { isLoaded, isSignedIn, user } = useUser();
-  const { mutate: getOrCreateUser } = api.users.getOrCreateUser.useMutation();
+  const [selectedBook, setSelectedBook] = useState<any | null>(null);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [fetchedBookIds, setFetchedBookIds] = useState<Set<string>>(new Set());
 
+  // UseQuery for snippet
+  const {
+    data: snippetData,
+    isLoading: snippetLoading,
+    refetch: refetchSnippet,
+  } = api.ai.getBookSnippet.useQuery(
+    {
+      title: selectedBook?.title ?? "",
+      // If authors is an array, join it. Otherwise use the raw string.
+      author: Array.isArray(selectedBook?.authors)
+        ? selectedBook.authors.join(", ")
+        : selectedBook?.authors ?? "",
+    },
+    {
+      enabled: false, // We will manually fetch only after the user clicks
+      onSuccess: () => {
+        if (selectedBook?.id) {
+          console.log(snippetData);
+          setFetchedBookIds(prev => new Set(prev).add(selectedBook.id));
+        }
+        setIsDialogOpen(true);
+      },
+    }
+  );
+
+  const { mutate: getOrCreateUser } = api.users.getOrCreateUser.useMutation();
+  const {
+    data: books,
+    isLoading: booksLoading,
+    error: booksError,
+  } = api.users.getAllBooks.useQuery();
+
+  // Create or fetch the user if needed
   useEffect(() => {
     if (user?.id && user?.fullName && user?.primaryEmailAddress?.emailAddress) {
       getOrCreateUser({
@@ -27,12 +68,7 @@ export default function Home() {
     }
   }, [user, getOrCreateUser]);
 
-  const {
-    data: books,
-    isLoading: booksLoading,
-    error: booksError,
-  } = api.users.getAllBooks.useQuery();
-
+  // Loading checks
   if (!isLoaded) {
     return <div>Loading user information...</div>;
   }
@@ -43,7 +79,7 @@ export default function Home() {
 
   return (
     <div className="p-4">
-      <motion.h1 
+      <motion.h1
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1, duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
@@ -61,7 +97,8 @@ export default function Home() {
             .slice()
             .sort(
               (a, b) =>
-                new Date(b.updatedAt ?? "").getTime() - new Date(a.updatedAt ?? "").getTime()
+                new Date(b.updatedAt ?? "").getTime() -
+                new Date(a.updatedAt ?? "").getTime()
             )
             .map((book, index) => {
               const createdAt = new Date(book.createdAt ?? "");
@@ -69,14 +106,18 @@ export default function Home() {
               const isNew = createdAt.getTime() === updatedAt.getTime();
               const actionText = isNew
                 ? `Added ${book.title}`
-                : `Updated ${book.title}`
+                : `Updated ${book.title}`;
 
               return (
                 <motion.div
                   key={book.id}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.1, duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
+                  transition={{
+                    delay: index * 0.1,
+                    duration: 0.5,
+                    ease: [0.4, 0, 0.2, 1],
+                  }}
                 >
                   <Card className="w-fit">
                     <CardHeader className="flex items-start space-x-2">
@@ -93,21 +134,25 @@ export default function Home() {
                     </CardContent>
 
                     <CardFooter className="flex justify-between">
+                      <Button variant="ghost" size="icon">
+                        <Heart />
+                      </Button>
                       <Button
                         variant="ghost"
                         size="icon"
-                        icon={<Heart />}
-                      />
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        icon={<WandSparkles />}
-                      />
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        icon={<MessageCircle />}
-                      />
+                        onClick={() => {
+                          setSelectedBook(book);
+                          if (!fetchedBookIds.has(book.id)) {
+                            setIsDialogOpen(true);
+                            refetchSnippet();
+                          }
+                        }}
+                      >
+                        <WandSparkles />
+                      </Button>
+                      <Button variant="ghost" size="icon">
+                        <MessageCircle />
+                      </Button>
                     </CardFooter>
                   </Card>
                 </motion.div>
@@ -115,6 +160,24 @@ export default function Home() {
             })}
         </div>
       )}
+
+      {/* AI Generated Snippet Dialog */}
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent className="bg-pink-200">
+          <DialogHeader>
+            <DialogTitle>{selectedBook?.title}</DialogTitle>
+          </DialogHeader>
+          <div className="p-4">
+            {snippetLoading ? (
+              <p>Generating snippet...</p>
+            ) : snippetData ? (
+              <p className="whitespace-pre-wrap">{snippetData.snippet}</p>
+            ) : (
+              <p>No snippet available</p>
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
