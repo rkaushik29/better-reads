@@ -1,23 +1,32 @@
 import axios from "axios";
 import * as cheerio from "cheerio";
 
-const scrapeBookCovers = async (title: string) => {
-  const searchUrl = `https://www.example.com/search?q=${encodeURIComponent(title)}`;
-  const { data } = await axios.get(searchUrl);
-  const $ = cheerio.load(data);
-  const covers: string[] = [];
+const scrapeBookCovers = async (query: string) => {
+  try {
+    const searchUrl = `https://www.google.com/search?hl=en&tbm=isch&q=${encodeURIComponent(query)}`;
+    const { data } = await axios.get(searchUrl, {
+      headers: {
+        "User-Agent":
+          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36",
+      },
+    });
+    const $ = cheerio.load(data);
+    const imageUrls: string[] = [];
 
-  // Adjust the selector based on the website's structure
-  $(".book-cover-selector").each((index, element) => {
-    if (index < 5) {
-      const imgSrc = $(element).attr("src");
-      if (imgSrc) {
-        covers.push(imgSrc);
+    $("img").each((index, element) => {
+      if (index < 5) {
+        const imgSrc = $(element).attr("src");
+        if (imgSrc) {
+          imageUrls.push(imgSrc);
+        }
       }
-    }
-  });
+    });
 
-  return covers;
+    return imageUrls;
+  } catch (error) {
+    console.error("Error scraping Google Images:", error);
+    throw new Error("Failed to scrape images");
+  }
 };
 
 export const bookService = {
