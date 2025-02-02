@@ -21,6 +21,7 @@ import {
 
 export default function Home() {
   const { isLoaded, isSignedIn, user } = useUser();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [selectedBook, setSelectedBook] = useState<any | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [fetchedBookIds, setFetchedBookIds] = useState<Set<string>>(new Set());

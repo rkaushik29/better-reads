@@ -41,6 +41,7 @@ export const BookDialog: React.FC<BookDialogProps> = ({
     },
   });
 
+  // @eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleAddToLibrary = async (book: any, id: string) => {
     const data = {
       userId: user.user?.id || "",
