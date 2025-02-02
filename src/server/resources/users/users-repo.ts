@@ -33,3 +33,7 @@ export const getOrCreateUser = async (userData: UsersInsert): Promise<UsersSelec
   }
   return user;
 };
+
+export const getAllUsers = async (): Promise<UsersSelect[]> => {
+  return await db.select().from(users);
+};

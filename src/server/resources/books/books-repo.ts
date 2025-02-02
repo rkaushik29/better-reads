@@ -8,6 +8,11 @@ async function create(data: UserBooksInsert) {
     .values({ ...data, createdAt: new Date(), updatedAt: new Date() });
 }
 
+export const getAllBooks = async () => {
+  return await db.select().from(user_books)
+};
+
 export const bookRepo = {
   create,
+  getAllBooks,
 };

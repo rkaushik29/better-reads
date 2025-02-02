@@ -1,6 +1,6 @@
 import { publicProcedure, router } from "../trpc";
 import { z } from "zod";
-import { getOrCreateUserService } from "../resources/users/users-service";
+import { getAllBooksService, getOrCreateUserService, getUserByAuthIdService } from "../resources/users/users-service";
 
 export const usersRouter = router({
   getOrCreateUser: publicProcedure
@@ -15,4 +15,14 @@ export const usersRouter = router({
       const user = await getOrCreateUserService(input);
       return user;
     }),
+  getUserByAuthId: publicProcedure
+    .input(z.object({ authId: z.string() }))
+    .query(async ({ input }) => {
+      const user = await getUserByAuthIdService(input.authId);
+      return user;
+    }),
+  getAllBooks: publicProcedure.query(async () => {
+    const books = await getAllBooksService();
+    return books;
+  }),
 });
