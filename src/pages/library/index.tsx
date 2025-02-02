@@ -51,8 +51,8 @@ export default function Library() {
       id: Number(id),
       data: {
         ...dataToUpdate,
-        startDate: dataToUpdate.startDate instanceof Date ? dataToUpdate.startDate : "",
-        endDate: dataToUpdate.endDate instanceof Date ? dataToUpdate.endDate : "",
+        startDate: dataToUpdate.startDate instanceof Date ? dataToUpdate.startDate.toISOString() : "",
+        endDate: dataToUpdate.endDate instanceof Date ? dataToUpdate.endDate.toISOString() : "",
       },
     });
   };
