@@ -2,7 +2,7 @@ import { publicProcedure, router } from "../trpc";
 import { z } from "zod";
 import { TRPCError } from "@trpc/server";
 import { bookService } from "../resources/books/books-service";
-import { userBooksInsertSchema } from "@/drizzle/schema";
+import { userBooksInsertSchema, userBooksUpdateSchema } from "@/drizzle/schema";
 
 export const booksRouter = router({
   create: publicProcedure
@@ -35,6 +35,17 @@ export const booksRouter = router({
   remove: publicProcedure.input(z.number()).mutation(async ({ input }) => {
     await bookService.remove(input);
   }),
+
+  update: publicProcedure
+    .input(
+      z.object({
+        id: z.number(),
+        data: userBooksUpdateSchema,
+      }),
+    )
+    .mutation(async ({ input }) => {
+      await bookService.update(input.id, input.data);
+    }),
 
   getTopCovers: publicProcedure.input(z.string()).query(async ({ input }) => {
     const covers = await bookService.scrapeBookCovers(input);

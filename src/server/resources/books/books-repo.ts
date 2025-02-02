@@ -1,4 +1,4 @@
-import { user_books, UserBooksInsert } from "@/drizzle/schema";
+import { user_books, UserBooksInsert, UserBooksUpdate } from "@/drizzle/schema";
 import { eq } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/neon-http";
 
@@ -10,7 +10,7 @@ async function create(data: UserBooksInsert) {
 }
 
 export const getAllBooks = async () => {
-  return await db.select().from(user_books)
+  return await db.select().from(user_books);
 };
 
 async function find(userId: string) {
@@ -21,6 +21,10 @@ async function find(userId: string) {
   return result;
 }
 
+async function update(id: number, data: UserBooksUpdate) {
+  await db.update(user_books).set({...data, updatedAt: new Date()}).where(eq(user_books.id, id));
+}
+
 async function remove(id: number) {
   await db.delete(user_books).where(eq(user_books.id, id));
 }
@@ -28,6 +32,7 @@ async function remove(id: number) {
 export const bookRepo = {
   create,
   getAllBooks,
+  update,
   find,
   remove,
 };

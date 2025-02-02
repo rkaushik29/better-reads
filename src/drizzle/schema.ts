@@ -72,7 +72,10 @@ export const annotationsInsertSchema = createInsertSchema(annotations);
 /**
  * Create Update Schemas using drizzle-zod.
  */
-export const userBooksUpdateSchema = createUpdateSchema(user_books);
+export const userBooksUpdateSchema = createUpdateSchema(user_books).extend({
+  startDate: z.string().optional().transform((val) => (val ? new Date(val) : undefined)),
+  endDate: z.string().optional().transform((val) => (val ? new Date(val) : undefined)),
+});
 export const annotationsUpdateSchema = createUpdateSchema(annotations);
 
 /**

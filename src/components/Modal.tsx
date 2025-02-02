@@ -23,13 +23,14 @@ export const Modal: FC<ModalProps> = ({
   title,
   description,
   children,
+  trigger,
   primaryAction,
   secondaryAction,
 }) => {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="outline">Edit Profile</Button>
+        {trigger}
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>

@@ -1,18 +1,47 @@
 import { BookCard } from "@/components/Card";
+import { Modal } from "@/components/Modal";
 import { Button } from "@/components/ui/button";
+import { UserBooksUpdate } from "@/drizzle/schema";
 import { api } from "@/utils/trpc";
 import { useUser } from "@clerk/nextjs";
 import { Pencil, Trash } from "lucide-react";
-import React from "react";
+import React, { useState } from "react";
+import { useForm, SubmitHandler } from "react-hook-form";
 
 export default function Library() {
   const { user, isLoaded } = useUser();
+
+  const { register, handleSubmit } = useForm();
+
   const { data: library, refetch } = api.books.find.useQuery(user?.id ?? "", {
     enabled: !!isLoaded,
   });
+
   const { mutate: removeBook } = api.books.remove.useMutation({
-    onSuccess: refetch(),
+    onSuccess: () => refetch(),
   });
+
+  const { mutate: updateBook } = api.books.update.useMutation({
+    onSuccess: () => refetch(),
+  });
+
+  const handleUpdate = async (id: number, data: UserBooksUpdate) => {
+    const dataToUpdate = {
+      startDate: data.startDate ? new Date(data.startDate) : null,
+      endDate: data.endDate ? new Date(data.endDate) : null,
+      rating: Number(data.rating),
+      status: data.status,
+    };
+    
+    updateBook({
+      id: Number(id),
+      data: {
+        ...dataToUpdate,
+        startDate: dataToUpdate.startDate instanceof Date ? dataToUpdate.startDate : null,
+        endDate: dataToUpdate.endDate instanceof Date ? dataToUpdate.endDate : null,
+      },
+    });
+  };
 
   const handleDelete = async (id: number) => {
     removeBook(id);
@@ -38,16 +67,48 @@ export default function Library() {
                 {book.printedPageCount}
               </div>
 
-              <div className="flex gap-2 p-2 group-hover:flex">
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => {
-                    /* handle edit */
-                  }}
+              <div className="flex gap-2 p-2 group-hover:flex items-center">
+                <Modal
+                  title="Edit Book"
+                  trigger={
+                    <div className="cursor-pointer">
+                      <Pencil className="h-4 w-4" />
+                    </div>
+                  }
+                  primaryAction={<Button type="submit">Save</Button>}
                 >
-                  <Pencil className="h-4 w-4" />
-                </Button>
+                  <form
+                    onSubmit={handleSubmit((data) =>
+                      handleUpdate(book.id, data),
+                    )}
+                  >
+                    <div>
+                      <input
+                        type="text"
+                        {...register("status")}
+                        defaultValue={book.status ?? ""}
+                        placeholder="Status (Reading/Read)"
+                      />
+                      <input
+                        type="date"
+                        defaultValue={book.startDate ?? ""}
+                        {...register("startDate")}
+                      />
+                      <input
+                        type="date"
+                        defaultValue={book.endDate ?? ""}
+                        {...register("endDate")}
+                      />
+                      <input
+                        type="number"
+                        defaultValue={book.rating ?? 0}
+                        {...register("rating")}
+                        placeholder="Rating"
+                      />
+                      <Button type="submit">Save</Button>
+                    </div>
+                  </form>
+                </Modal>
                 <Button
                   variant="ghost"
                   size="icon"

@@ -1,7 +1,7 @@
 import axios from "axios";
 import * as cheerio from "cheerio";
 import { bookRepo } from "./books-repo";
-import { UserBooksInsert } from "@/drizzle/schema";
+import { UserBooksInsert, UserBooksUpdate } from "@/drizzle/schema";
 
 async function create(data: UserBooksInsert) {
   await bookRepo.create(data);
@@ -13,6 +13,10 @@ async function find(userId: string) {
 
 async function remove(id: number) {
   await bookRepo.remove(id);
+}
+
+async function update(id: number, data: UserBooksUpdate) {
+  await bookRepo.update(id, data);
 }
 
 const scrapeBookCovers = async (query: string) => {
@@ -46,6 +50,7 @@ const scrapeBookCovers = async (query: string) => {
 export const bookService = {
   create,
   find,
+  update,
   remove,
   scrapeBookCovers,
 };
