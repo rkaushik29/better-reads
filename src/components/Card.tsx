@@ -20,7 +20,7 @@ export const BookCard: React.FC<CardProps> = ({
   children,
 }) => {
   return (
-    <Card className="w-[350px]">
+    <Card className="w-[200px]">
       <CardHeader>
         <CardTitle>{title}</CardTitle>
         <CardDescription>{description}</CardDescription>
