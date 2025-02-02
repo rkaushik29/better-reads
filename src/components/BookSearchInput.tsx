@@ -8,7 +8,7 @@ export type BookSearchInputProps = React.InputHTMLAttributes<HTMLInputElement> &
 export const BookSearchInput = React.forwardRef<HTMLInputElement, BookSearchInputProps>(
   ({ icon, className, ...props }, ref) => {
     return (
-      <div className="flex items-center min-w-96 bg-foreground rounded-md overflow-hidden">
+      <div className="flex items-center w-inherit bg-foreground rounded-md overflow-hidden">
         {icon && <div className="p-1">{icon}</div>}
         <input
           ref={ref}

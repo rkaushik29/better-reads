@@ -100,8 +100,8 @@ export const BookSearchWithTag: React.FC = () => {
   };
 
   return (
-    <div className="relative">
-      <div className="flex flex-row gap-2">
+    <div className="relative w-full mt-4">
+      <div className="flex flex-row gap-2 w-full">
         {selectedTag && (
           <div className="flex items-center justify-center pl-2 cursor-pointer bg-slate-300">
             <TagChip
@@ -112,14 +112,14 @@ export const BookSearchWithTag: React.FC = () => {
             />
           </div>
         )}
-        <div className="flex items-center min-w-[10rem] bg-white rounded-md overflow-hidden">
+        <div className="flex flex-1 items-center bg-white rounded-md overflow-hidden">
           <BookSearchInput
             ref={inputRef}
             value={inputValue}
             onChange={handleInputChange}
             icon={<Search />}
             placeholder="Search or type / for commands"
-            className="flex-1 bg-white"
+            className="w-full bg-white"
           />
         </div>
       </div>

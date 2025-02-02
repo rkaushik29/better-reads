@@ -3,9 +3,18 @@ import { Dialog, DialogTrigger, DialogContent } from "@/components/ui/dialog";
 import BookSearchWithTag from "./BookSearchWithTag";
 import { Button } from "@/components/ui/button";
 import { Search } from "lucide-react";
-export const BookSearchDialog: React.FC = () => {
+
+interface BookSearchDialogProps {
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+}
+
+export const BookSearchDialog: React.FC<BookSearchDialogProps> = ({
+  open,
+  onOpenChange,
+}) => {
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogTrigger asChild>
         <Button icon={<Search color="white" />}>Search | Cmd+K</Button>
       </DialogTrigger>
