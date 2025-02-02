@@ -12,9 +12,6 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Heart, MessageCircle, WandSparkles } from "lucide-react";
-import { newtonsCradle } from 'ldrs';
-
-newtonsCradle.register()
 
 export default function Home() {
   const { isLoaded, isSignedIn, user } = useUser();
