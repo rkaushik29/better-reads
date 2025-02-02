@@ -29,7 +29,7 @@ const App: AppType = ({ Component, pageProps }) => {
     api.createClient({
       links: [
         httpBatchLink({
-          url: 'http://localhost:3000/api/trpc',
+          url: `${window.location.origin}/api/trpc`,
         }),
       ],
     })
