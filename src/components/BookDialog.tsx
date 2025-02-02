@@ -1,4 +1,3 @@
-// eslint-disable
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import {
@@ -11,9 +10,11 @@ import {
 } from "@/components/ui/dialog";
 
 interface BookDialogProps {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   book: any;
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onAddToLibrary: (book: any) => void;
 }
 
