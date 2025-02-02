@@ -1,5 +1,16 @@
-import { integer, pgTable, serial, text, varchar, timestamp } from "drizzle-orm/pg-core";
-import { createSelectSchema, createInsertSchema, createUpdateSchema } from "drizzle-zod";
+import {
+  integer,
+  pgTable,
+  serial,
+  text,
+  varchar,
+  timestamp,
+} from "drizzle-orm/pg-core";
+import {
+  createSelectSchema,
+  createInsertSchema,
+  createUpdateSchema,
+} from "drizzle-zod";
 import { z } from "zod";
 
 export const users = pgTable("users", {
@@ -88,7 +99,7 @@ export const refinedUserBooksInsertSchema = userBooksInsertSchema
     {
       message: "Printed page count must be greater than 0 if provided",
       path: ["printedPageCount"],
-    }
+    },
   );
 
 /**
@@ -127,3 +138,4 @@ export type AnnotationsSelect = z.infer<typeof annotationsSelectSchema>;
 export type AnnotationsInsert = z.infer<typeof refinedAnnotationsInsertSchema>;
 export type AnnotationsUpdate = z.infer<typeof annotationsUpdateSchema>;
 export type AnnotationsDelete = z.infer<typeof annotationsDeleteSchema>;
+

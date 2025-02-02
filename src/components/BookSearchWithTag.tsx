@@ -4,6 +4,7 @@ import TagChip from "./TagChip";
 import { Search } from "lucide-react";
 
 import BookDialog from "./BookDialog";
+import { api } from "@/utils/trpc";
 
 type SearchTag = "book" | "author";
 
@@ -11,11 +12,15 @@ const commandOptions: SearchTag[] = ["book", "author"];
 
 const API_KEY = process.env.NEXT_PUBLIC_GOOGLE_BOOKS_API_KEY;
 
-const fetchBooks = async (query: string, page: number, tag: SearchTag | null) => {
+const fetchBooks = async (
+  query: string,
+  page: number,
+  tag: SearchTag | null,
+) => {
   const startIndex = (page - 1) * 20;
   const searchQuery = tag ? `in${tag}:${query}` : query;
   const url = `https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(
-    searchQuery
+    searchQuery,
   )}&key=${API_KEY}&maxResults=20&startIndex=${startIndex}`;
   const response = await fetch(url);
   if (!response.ok) {
@@ -35,6 +40,7 @@ export const BookSearchWithTag: React.FC = () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [selectedBook, setSelectedBook] = useState<any>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+
 
   useEffect(() => {
     if (!selectedTag && inputValue.startsWith("/")) {
@@ -99,6 +105,8 @@ export const BookSearchWithTag: React.FC = () => {
   const closeModal = () => {
     setSelectedBook(null);
   };
+
+  
 
   return (
     <div className="relative w-full mt-4">
@@ -187,8 +195,6 @@ export const BookSearchWithTag: React.FC = () => {
           book={selectedBook}
           open={true}
           onOpenChange={(open) => !open && closeModal()}
-          // TODO: Implement this @Hiba
-          onAddToLibrary={() => {}}
         />
       )}
     </div>
