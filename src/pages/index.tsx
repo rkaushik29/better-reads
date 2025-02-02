@@ -1,7 +1,21 @@
+import { useEffect } from "react";
 import { useUser } from "@clerk/nextjs";
+import { api } from "@/utils/trpc";
 
 export default function Home() {
   const { isLoaded, isSignedIn, user } = useUser();
+
+  const { mutate: getOrCreateUser } = api.users.getOrCreateUser.useMutation();
+
+  useEffect(() => {
+    if (user?.id && user?.fullName && user?.primaryEmailAddress?.emailAddress) {
+      getOrCreateUser({
+        authId: user.id,
+        name: user.fullName,
+        email: user.primaryEmailAddress.emailAddress,
+      });
+    }
+  }, [user, getOrCreateUser]);
 
   if (!isLoaded) {
     return <div>Loading user information...</div>;
