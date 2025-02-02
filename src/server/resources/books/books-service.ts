@@ -21,22 +21,25 @@ async function update(id: number, data: UserBooksUpdate) {
 
 const scrapeBookCovers = async (query: string) => {
   try {
-    const searchUrl = `https://www.google.com/search?hl=en&tbm=isch&q=${encodeURIComponent(query)}`;
+    const searchUrl = `https://www.google.com/search?hl=en&tbm=isch&q=${encodeURIComponent(
+      query
+    )}&tbs=iar:portrait,itp:photo,isz:lt,islt:2mp`;
+
     const { data } = await axios.get(searchUrl, {
       headers: {
         "User-Agent":
           "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36",
       },
     });
+
     const $ = cheerio.load(data);
     const imageUrls: string[] = [];
 
     $("img").each((index, element) => {
-      if (index < 5) {
-        const imgSrc = $(element).attr("src");
-        if (imgSrc) {
-          imageUrls.push(imgSrc);
-        }
+      if (imageUrls.length >= 10) return false;
+      const imgSrc = $(element).attr("src");
+      if (imgSrc?.startsWith("http")) {
+        imageUrls.push(imgSrc);
       }
     });
 

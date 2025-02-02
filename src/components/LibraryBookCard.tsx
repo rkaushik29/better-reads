@@ -1,16 +1,16 @@
 import React from "react";
-import { useForm } from "react-hook-form";
-import { Pencil, Trash, Check, Clock, Search } from "lucide-react";
+import { Trash, Check, Clock, Search } from "lucide-react";
 
 import { BookCard } from "@/components/Card";
-import { Modal } from "@/components/Modal";
+import EditBookModal from "@/components/EditBookModal";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { UserBooksUpdate } from "@/drizzle/schema";
 
 export interface LibraryBook {
   id: number;
   title: string;
+  description?: string | null;
+  category?: string | null;
   authors?: string | null;
   imageLinks?: string | null;
   status: string | null;
@@ -40,21 +40,6 @@ const renderStatusIcon = (status: string) => {
 };
 
 export function LibraryBookCard({ book, onUpdate, onDelete }: LibraryBookCardProps) {
-  const { register, handleSubmit } = useForm();
-
-  const handleUpdate = (data: UserBooksUpdate) => {
-    const startDate = data.startDate ? new Date(data.startDate) : null;
-    const endDate = data.endDate ? new Date(data.endDate) : null;
-
-    onUpdate(book.id, {
-      ...data,
-      startDate: startDate instanceof Date ? startDate : undefined,
-      endDate: endDate instanceof Date ? endDate : undefined,
-      rating: Number(data.rating),
-      status: data.status,
-    });
-  };
-
   const handleDeleteButton = () => {
     onDelete(book.id);
   };
@@ -77,75 +62,7 @@ export function LibraryBookCard({ book, onUpdate, onDelete }: LibraryBookCardPro
         </div>
       </BookCard>
       <div className="absolute -top-2 -right-2 flex gap-1 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-        <Modal
-          title={`Edit ${book.title}`}
-          trigger={
-            <Button className="bg-green-500 hover:bg-green-600 rounded-full text-white" size="icon">
-              <Pencil className="h-4 w-4" />
-            </Button>
-          }
-        >
-          <form onSubmit={handleSubmit(handleUpdate)}>
-            <div className="flex flex-col gap-2">
-              <div className="flex gap-2">
-                <label className="flex items-center gap-2">
-                  <input
-                    type="radio"
-                    value="wantToRead"
-                    {...register("status")}
-                    defaultChecked={book.status === "wantToRead"}
-                  />
-                  TBR
-                </label>
-                <label className="flex items-center gap-2">
-                  <input
-                    type="radio"
-                    value="reading"
-                    {...register("status")}
-                    defaultChecked={book.status === "reading"}
-                  />
-                  Reading
-                </label>
-                <label className="flex items-center gap-2">
-                  <input
-                    type="radio"
-                    value="read"
-                    {...register("status")}
-                    defaultChecked={book.status === "read"}
-                  />
-                  Read
-                </label>
-              </div>
-              <Input
-                type="date"
-                defaultValue={
-                  book.startDate
-                    ? new Date(book.startDate).toISOString().split("T")[0]
-                    : ""
-                }
-                {...register("startDate")}
-              />
-              <Input
-                type="date"
-                defaultValue={
-                  book.endDate
-                    ? new Date(book.endDate).toISOString().split("T")[0]
-                    : ""
-                }
-                {...register("endDate")}
-              />
-              <Input
-                type="number"
-                defaultValue={book.rating ?? 0}
-                {...register("rating")}
-                placeholder="Rating"
-                max={5}
-                min={0}
-              />
-              <Button type="submit">Save</Button>
-            </div>
-          </form>
-        </Modal>
+        <EditBookModal book={book} onUpdate={onUpdate} />
         <Button
           onClick={handleDeleteButton}
           className="bg-red-500 text-white rounded-full p-1 shadow-lg hover:bg-red-600"
