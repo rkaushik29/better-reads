@@ -30,7 +30,6 @@ const buttonVariants = cva(
   }
 )
 
-// First, define a common base interface for the Button.
 interface BaseButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonVariants> {
@@ -39,11 +38,11 @@ interface BaseButtonProps
 
 interface ButtonIconProps extends BaseButtonProps {
   icon: React.ReactNode
-  children?: never
+  children?: React.ReactNode
 }
 
 interface ButtonTextProps extends BaseButtonProps {
-  icon?: never
+  icon?: React.ReactNode
   children: React.ReactNode
 }
 
@@ -54,17 +53,21 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     const Comp = asChild ? Slot : "button"
     return (
       <Comp
-        className={cn(buttonVariants({ variant, size, className }))}
+        className={cn(buttonVariants({ variant, size, className }), {
+          'p-0': icon && !children
+        })}
         ref={ref}
         {...props}
       >
-        {icon ? (
-          <span className="flex items-center text-black font-bold">
+        {icon && (
+          <span className={cn(
+            "flex items-center text-black font-bold",
+            children && "pr-2"
+          )}>
             {icon}
           </span>
-        ) : (
-          children
         )}
+        {children}
       </Comp>
     )
   }

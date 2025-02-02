@@ -1,8 +1,6 @@
 import "@/styles/globals.css";
-import type { AppProps } from "next/app";
+import type { AppType } from "next/app";
 import { httpBatchLink } from "@trpc/client";
-import { createTRPCNext } from "@trpc/next";
-import type { AppRouter } from "@/server/routers/_app";
 import {
   ClerkProvider,
 } from "@clerk/nextjs";
@@ -14,36 +12,40 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { SidebarNav } from "@/components/SidebarNav";
-import { BookSearchWithTag } from "@/components/BookSearchWithTag";
+import { BookSearchDialog } from "@/components/BookSearchDialog";
+import { api } from "@/utils/trpc";
+import { useState } from "react";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 const quicksand = Quicksand({
   subsets: ['latin'],
   variable: '--font-quicksand',
 });
 
-const trpc = createTRPCNext<AppRouter>({
-  config() {
-    return {
+const App: AppType = ({ Component, pageProps }) => {
+  const [queryClient] = useState(() => new QueryClient());
+  const [trpcClient] = useState(() => 
+    api.createClient({
       links: [
         httpBatchLink({
-          url: "/api/trpc",
+          url: 'http://localhost:3000/api/trpc',
         }),
       ],
-    };
-  },
-});
-
-function App({ Component, pageProps }: AppProps) {
+    })
+  );
+  
   return (
-    <ClerkProvider>
-      <main className={`${quicksand.variable} font-sans`}>
-        <SidebarProvider>
+    <api.Provider client={trpcClient} queryClient={queryClient}>
+      <QueryClientProvider client={queryClient}>
+        <ClerkProvider>
+          <main className={`${quicksand.variable} font-sans`}>
+            <SidebarProvider>
           <SidebarNav />
           <SidebarInset>
             <div className="flex justify-between items-center">
               <SidebarTrigger className="p-1 m-1" />
               <div className="p-3">
-                <BookSearchWithTag />
+                <BookSearchDialog />
               </div>
             </div>
             <Component {...pageProps} />
@@ -51,7 +53,9 @@ function App({ Component, pageProps }: AppProps) {
         </SidebarProvider>
       </main>
     </ClerkProvider>
+    </QueryClientProvider>
+    </api.Provider>
   );
 }
 
-export default trpc.withTRPC(App);
+export default App;

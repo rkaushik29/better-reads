@@ -2,7 +2,6 @@ import React, { useState, useRef, useEffect } from "react";
 import BookSearchInput from "./BookSearchInput";
 import TagChip from "./TagChip";
 import { Search } from "lucide-react";
-
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
@@ -14,10 +13,7 @@ const API_KEY = process.env.NEXT_PUBLIC_GOOGLE_BOOKS_API_KEY;
 
 const fetchBooks = async (query: string, page: number, tag: SearchTag | null) => {
   const startIndex = (page - 1) * 20;
-  const searchQuery = tag 
-    ? `in${tag}:${query}`
-    : query;
-  
+  const searchQuery = tag ? `in${tag}:${query}` : query;
   const url = `https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(
     searchQuery
   )}&key=${API_KEY}&maxResults=20&startIndex=${startIndex}`;
@@ -38,6 +34,7 @@ export const BookSearchWithTag: React.FC = () => {
   const [selectedBook, setSelectedBook] = useState<any>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
+  // Show command dropdown if input starts with "/" and no tag is selected.
   useEffect(() => {
     if (!selectedTag && inputValue.startsWith("/")) {
       setShowCommandDropdown(true);
@@ -46,6 +43,7 @@ export const BookSearchWithTag: React.FC = () => {
     }
   }, [inputValue, selectedTag]);
 
+  // Reset search results and pagination when query changes.
   useEffect(() => {
     if (!showCommandDropdown && inputValue.trim() !== "") {
       setPage(1);
@@ -55,6 +53,7 @@ export const BookSearchWithTag: React.FC = () => {
     }
   }, [inputValue, showCommandDropdown]);
 
+  // Debounced API call.
   useEffect(() => {
     if (!showCommandDropdown && inputValue.trim() !== "") {
       const timer = setTimeout(() => {
@@ -104,7 +103,7 @@ export const BookSearchWithTag: React.FC = () => {
     <div className="relative">
       <div className="flex flex-row gap-2">
         {selectedTag && (
-          <div className="flex items-center justify-center pl-2 cursor-pointer bg-transparent">
+          <div className="flex items-center justify-center pl-2 cursor-pointer bg-slate-300">
             <TagChip
               label={selectedTag.charAt(0).toUpperCase() + selectedTag.slice(1)}
               color={selectedTag === "book" ? "blue" : "red"}
@@ -124,28 +123,13 @@ export const BookSearchWithTag: React.FC = () => {
           />
         </div>
       </div>
-      {showCommandDropdown && (
-        <div className="absolute left-0 right-0 mt-1 bg-white shadow rounded-md z-10">
-          {commandOptions.map((option) => (
-            <div
-              key={option}
-              className="cursor-pointer px-4 py-2 hover:bg-gray-100"
-              onMouseDown={(e) => {
-                e.preventDefault();
-                handleCommandSelect(option);
-              }}
-            >
-              {option.charAt(0).toUpperCase() + option.slice(1)}
-            </div>
-          ))}
-        </div>
-      )}
 
       {!showCommandDropdown && inputValue.trim() !== "" && (
-        <div className="absolute left-0 right-0 mt-1 bg-white shadow rounded-md z-10 max-h-96 overflow-y-auto">
+        <div className="mt-1 bg-white shadow rounded-md z-10 max-h-96 overflow-y-auto">
           {searchResults.map((item) => {
             const title = item.volumeInfo?.title || "No title";
-            const authors = item.volumeInfo?.authors?.join(", ") || "Unknown author";
+            const authors =
+              item.volumeInfo?.authors?.join(", ") || "Unknown author";
             return (
               <div
                 key={item.id}
@@ -213,7 +197,8 @@ export const BookSearchWithTag: React.FC = () => {
               <div className="mt-4">
                 <strong>Description: </strong>
                 <p className="text-sm text-gray-700">
-                  {selectedBook.volumeInfo.description || "No description available."}
+                  {selectedBook.volumeInfo.description ||
+                    "No description available."}
                 </p>
               </div>
             </CardContent>
