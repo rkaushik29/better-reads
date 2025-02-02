@@ -7,6 +7,14 @@ async function create(data: UserBooksInsert) {
   await bookRepo.create(data);
 }
 
+async function find(userId: string) {
+  return await bookRepo.find(userId);
+}
+
+async function remove(id: number) {
+  await bookRepo.remove(id);
+}
+
 const scrapeBookCovers = async (query: string) => {
   try {
     const searchUrl = `https://www.google.com/search?hl=en&tbm=isch&q=${encodeURIComponent(query)}`;
@@ -37,5 +45,7 @@ const scrapeBookCovers = async (query: string) => {
 
 export const bookService = {
   create,
+  find,
+  remove,
   scrapeBookCovers,
 };

@@ -28,6 +28,14 @@ export const booksRouter = router({
       await bookService.create(data);
     }),
 
+  find: publicProcedure.input(z.string()).query(async ({ input }) => {
+    return await bookService.find(input);
+  }),
+
+  remove: publicProcedure.input(z.number()).mutation(async ({ input }) => {
+    await bookService.remove(input);
+  }),
+
   getTopCovers: publicProcedure.input(z.string()).query(async ({ input }) => {
     const covers = await bookService.scrapeBookCovers(input);
     return covers;
