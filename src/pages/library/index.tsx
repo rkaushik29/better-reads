@@ -55,18 +55,12 @@ export default function Library() {
         <h1 className="text-3xl font-bold">Library</h1>
       </div>
       <Tabs defaultValue="gallery">
-        <TabsList className="grid w-fit grid-cols-3">
+        <TabsList className="grid w-fit grid-cols-2">
           <TabsTrigger
             value="gallery"
             className="data-[state=active]:bg-green-500 data-[state=active]:text-white data-[state=active]:font-bold"
           >
             Gallery
-          </TabsTrigger>
-          <TabsTrigger
-            value="progress"
-            className="data-[state=active]:bg-green-500 data-[state=active]:text-white data-[state=active]:font-bold"
-          >
-            Progress
           </TabsTrigger>
           <TabsTrigger
             value="timeline"
@@ -85,11 +79,6 @@ export default function Library() {
                 onDelete={handleDelete}
               />
             ))}
-          </div>
-        </TabsContent>
-        <TabsContent value="progress">
-          <div className="mt-4">
-            <p>Progress content goes here.</p>
           </div>
         </TabsContent>
         <TabsContent value="timeline">
