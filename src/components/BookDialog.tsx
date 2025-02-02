@@ -9,7 +9,6 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { api } from "@/utils/trpc";
-import { UserBooksInsert } from "@/drizzle/schema";
 import { useUser } from "@clerk/nextjs";
 
 interface BookDialogProps {
@@ -59,6 +58,8 @@ export const BookDialog: React.FC<BookDialogProps> = ({
     };
 
     await createBook({ data });
+
+    onOpenChange(false);
   };
 
   const renderDescription = (desc: string) => {
@@ -145,4 +146,3 @@ export const BookDialog: React.FC<BookDialogProps> = ({
 };
 
 export default BookDialog;
-
